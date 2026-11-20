@@ -26,14 +26,20 @@ class User(UserMixin, db.Model):
     cart_items = db.relationship('CartItem', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        if password:
+            self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        if not self.password_hash or not password:
+            return False
+        try:
+            return check_password_hash(self.password_hash, password)
+        except Exception:
+            return False
 
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        return (self.role or '').strip().lower() == 'admin'
 
     def __repr__(self):
         return f'<User {self.email} ({self.role})>'
@@ -75,15 +81,15 @@ class Pet(db.Model):
 
     @property
     def is_approved(self):
-        return self.approval_status == 'approved'
+        return (self.approval_status or 'approved').strip().lower() == 'approved'
 
     @property
     def is_pending(self):
-        return self.approval_status == 'pending'
+        return (self.approval_status or '').strip().lower() == 'pending'
 
     @property
     def is_rejected(self):
-        return self.approval_status == 'rejected'
+        return (self.approval_status or '').strip().lower() == 'rejected'
 
     @property
     def all_images(self):

@@ -1,62 +1,76 @@
 import os
+import sys
 from datetime import datetime, timedelta, timezone
-from app import app
+from sqlalchemy import func
+
+from config import Config
 from models import db, User, Pet, Product, AdoptionRequest, Order, OrderItem
 
 def utc_now():
     return datetime.now(timezone.utc)
 
-def seed_database():
-    with app.app_context():
-        # Drop and recreate tables for clean seed
-        print("Recreating database schema...")
-        db.drop_all()
+def seed_database(safe_mode=True, app_instance=None):
+    if app_instance is None:
+        from app import app
+        target_app = app
+    else:
+        target_app = app_instance
+
+    with target_app.app_context():
+        # Ensure database tables exist safely without dropping
         db.create_all()
 
-        print("Seeding Users with authentic Indian profiles...")
-        # 1. Admin User (Aarav Sharma)
-        admin = User(
-            name="Aarav Sharma",
-            email="admin@adoptnshop.com",
-            role="admin",
-            phone="+91 98200 12345",
-            address="Adopt n Shop Shelter HQ, Bandra Kurla Complex (BKC), Mumbai, Maharashtra - 400051"
-        )
-        admin.set_password("admin123")
-        db.session.add(admin)
+        print("[SEED] Verifying demo users and administrator...")
+        admin_email = Config.ADMIN_EMAIL.lower()
+        admin_pass = Config.ADMIN_PASSWORD
+        admin_name = Config.ADMIN_NAME
+
+        # 1. Admin User
+        admin = User.query.filter(func.lower(User.email) == admin_email).first()
+        if not admin:
+            admin = User(
+                name=admin_name,
+                email=admin_email,
+                role="admin",
+                phone="+91 98200 12345",
+                address="Adopt n Shop Shelter HQ, Bandra Kurla Complex (BKC), Mumbai, Maharashtra - 400051"
+            )
+            admin.set_password(admin_pass)
+            db.session.add(admin)
+            print(f"[SEED] Created administrator: {admin_email}")
+        else:
+            if admin.role != "admin":
+                admin.role = "admin"
+            if os.environ.get('ADMIN_PASSWORD'):
+                admin.set_password(os.environ.get('ADMIN_PASSWORD'))
+            print(f"[SEED] Administrator verified: {admin_email}")
 
         # 2. Demo Customers
-        rohan = User(
-            name="Rohan Verma",
-            email="rohan@example.com",
-            role="customer",
-            phone="+91 98765 43210",
-            address="Flat 402, Shanti Heights, Bandra West, Mumbai, Maharashtra - 400050"
-        )
-        rohan.set_password("user123")
-        db.session.add(rohan)
+        demo_users = [
+            ("Rohan Verma", "rohan@example.com", "+91 98765 43210", "Flat 402, Shanti Heights, Bandra West, Mumbai, Maharashtra - 400050", "user123"),
+            ("Priya Patel", "priya@example.com", "+91 98234 56789", "12, Gokuldham Society, Satellite Road, Ahmedabad, Gujarat - 380015", "user123"),
+            ("Ananya Iyer", "ananya@example.com", "+91 97123 45678", "88, 12th Main, Indiranagar, Bengaluru, Karnataka - 560038", "user123")
+        ]
 
-        priya = User(
-            name="Priya Patel",
-            email="priya@example.com",
-            role="customer",
-            phone="+91 98234 56789",
-            address="12, Gokuldham Society, Satellite Road, Ahmedabad, Gujarat - 380015"
-        )
-        priya.set_password("user123")
-        db.session.add(priya)
+        for name, email, phone, addr, pwd in demo_users:
+            u_clean = email.lower()
+            existing = User.query.filter(func.lower(User.email) == u_clean).first()
+            if not existing:
+                u = User(name=name, email=u_clean, role="customer", phone=phone, address=addr)
+                u.set_password(pwd)
+                db.session.add(u)
+                print(f"[SEED] Created demo customer: {u_clean}")
 
-        ananya = User(
-            name="Ananya Iyer",
-            email="ananya@example.com",
-            role="customer",
-            phone="+91 97123 45678",
-            address="88, 12th Main, Indiranagar, Bengaluru, Karnataka - 560038"
-        )
-        ananya.set_password("user123")
-        db.session.add(ananya)
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[SEED] Warning during user commit: {e}")
 
-        db.session.commit()
+        # Fetch fresh user references
+        rohan = User.query.filter(func.lower(User.email) == "rohan@example.com").first()
+        priya = User.query.filter(func.lower(User.email) == "priya@example.com").first()
+        ananya = User.query.filter(func.lower(User.email) == "ananya@example.com").first()
 
         print("Seeding Pets across Indian cities...")
         pets = [
@@ -69,6 +83,10 @@ def seed_database():
                 gender="Male",
                 size="Medium",
                 city="Mumbai",
+                state="Maharashtra",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Fully Vaccinated, Dewormed & Microchipped",
                 vaccinated=True,
                 description="Bruno is a resilient and affectionate Indian Indie dog rescued from Marine Drive promenade. Highly alert, friendly, extremely low-maintenance, and great with society apartments.",
@@ -84,6 +102,10 @@ def seed_database():
                 gender="Female",
                 size="Small",
                 city="Bengaluru",
+                state="Karnataka",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Spayed",
                 vaccinated=True,
                 description="Simba is a gentle cream-white Persian beauty with amber eyes. She enjoys quiet balconies, afternoon naps in the Bangalore breeze, and soft chin scratches.",
@@ -99,6 +121,10 @@ def seed_database():
                 gender="Male",
                 size="Large",
                 city="Delhi NCR",
+                state="Delhi NCR",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Up-to-date on 7-in-1 Vaccine & Anti-Rabies",
                 vaccinated=True,
                 description="Sheru is a magnificent, playful Golden Retriever who loves morning park runs in Lodhi Gardens. Very gentle with kids and loves ball games.",
@@ -106,7 +132,7 @@ def seed_database():
                 status="available"
             ),
             Pet(
-                owner_id=rohan.id,  # Listed by Rohan Verma
+                owner_id=rohan.id if rohan else None,
                 name="Bella",
                 species="Dog",
                 breed="Beagle",
@@ -115,6 +141,10 @@ def seed_database():
                 gender="Female",
                 size="Medium",
                 city="Mumbai",
+                state="Maharashtra",
+                contact_phone="+91 98765 43210",
+                rehoming_fee=500.0,
+                approval_status="approved",
                 health_status="Vaccinated & Health Checked",
                 vaccinated=True,
                 description="Bella is a curious, energetic Beagle pup listed for rehoming as our family is relocating abroad. She is house-trained, friendly, and loves treat puzzles.",
@@ -122,7 +152,7 @@ def seed_database():
                 status="pending"
             ),
             Pet(
-                owner_id=priya.id,  # Listed by Priya Patel
+                owner_id=priya.id if priya else None,
                 name="Milo",
                 species="Cat",
                 breed="Indian Indie Cat",
@@ -131,6 +161,10 @@ def seed_database():
                 gender="Male",
                 size="Small",
                 city="Ahmedabad",
+                state="Gujarat",
+                contact_phone="+91 98234 56789",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Neutered",
                 vaccinated=True,
                 description="Rescued as a stray kitten, Milo has blossomed into a clean, playful indoor cat. He is litter-trained, loves chasing feather toys, and purrs non-stop.",
@@ -146,6 +180,10 @@ def seed_database():
                 gender="Male",
                 size="Small",
                 city="Pune",
+                state="Maharashtra",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Avian Vet Inspected & Healthy",
                 vaccinated=True,
                 description="Mithu is a lively green parrot who loves fresh guava slices and almonds. He whistles tunes and greets family members with cheerful chirps.",
@@ -161,6 +199,10 @@ def seed_database():
                 gender="Female",
                 size="Small",
                 city="Hyderabad",
+                state="Telangana",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Vet Checked",
                 vaccinated=True,
                 description="Clover is a sweet bunny with floppy ears and a calm temperament. She loves fresh coriander, spinach, and gentle ear rubs.",
@@ -176,6 +218,10 @@ def seed_database():
                 gender="Male",
                 size="Large",
                 city="Bengaluru",
+                state="Karnataka",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Dewormed",
                 vaccinated=True,
                 description="Rocky is an energetic chocolate Labrador who loves playing fetch in Cubbon Park. Perfect companion for an active family.",
@@ -191,6 +237,10 @@ def seed_database():
                 gender="Female",
                 size="Small",
                 city="Pune",
+                state="Maharashtra",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Spayed",
                 vaccinated=True,
                 description="Cleo is a blue-eyed Siamese mix who loves curling up on the sofa during monsoons. She gets along well with calm dogs and other cats.",
@@ -206,6 +256,10 @@ def seed_database():
                 gender="Male",
                 size="Medium",
                 city="Jaipur",
+                state="Rajasthan",
+                contact_phone="+91 98200 12345",
+                rehoming_fee=0.0,
+                approval_status="approved",
                 health_status="Vaccinated & Neutered",
                 vaccinated=True,
                 description="Moti is a proud, intelligent desi dog who was adopted by Ananya through Adopt n Shop. He is now living his happiest life!",
@@ -213,8 +267,23 @@ def seed_database():
                 status="adopted"
             )
         ]
-        db.session.add_all(pets)
-        db.session.commit()
+
+        for p in pets:
+            existing_pet = Pet.query.filter_by(name=p.name, species=p.species).first()
+            if not existing_pet:
+                db.session.add(p)
+                print(f"[SEED] Added pet: {p.name}")
+            else:
+                if (not existing_pet.approval_status or existing_pet.approval_status != "approved") and existing_pet.owner_id is None:
+                    existing_pet.approval_status = "approved"
+                if existing_pet.state != p.state and p.state:
+                    existing_pet.state = p.state
+
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[SEED] Warning during pet commit: {e}")
 
         print("Seeding Products with Indian Rupee (INR) Pricing...")
         products = [
@@ -358,128 +427,175 @@ def seed_database():
                 is_active=True
             )
         ]
-        db.session.add_all(products)
-        db.session.commit()
+        for pr in products:
+            existing_product = Product.query.filter_by(name=pr.name).first()
+            if not existing_product:
+                db.session.add(pr)
+                print(f"[SEED] Added product: {pr.name}")
+            else:
+                if not existing_product.is_active:
+                    existing_product.is_active = True
 
-        print("Seeding Adoption Requests...")
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[SEED] Warning during product commit: {e}")
+
+        print("Seeding Adoption Requests (idempotent)...")
+        moti = Pet.query.filter_by(name="Moti").first()
+        bruno = Pet.query.filter_by(name="Bruno").first()
+
         # Ananya's approved request for Moti
-        req1 = AdoptionRequest(
-            user_id=ananya.id,
-            pet_id=10,  # Moti
-            full_name="Ananya Iyer",
-            phone="+91 97123 45678",
-            address="88, 12th Main, Indiranagar, Bengaluru, Karnataka - 560038",
-            living_situation="Own House with Fenced Yard",
-            has_other_pets=False,
-            previous_experience="Grew up with indie dogs in Bengaluru. Knowledgeable about regular vet checkups and daily exercise.",
-            reason="Looking for a loyal and affectionate companion for our home.",
-            status="approved",
-            admin_notes="Home verification complete. Ananya is a wonderful pet parent. Moti is happily adopted!",
-            created_at=utc_now() - timedelta(days=12),
-            updated_at=utc_now() - timedelta(days=10)
-        )
-        db.session.add(req1)
+        if ananya and moti:
+            existing_req1 = AdoptionRequest.query.filter_by(user_id=ananya.id, pet_id=moti.id).first()
+            if not existing_req1:
+                req1 = AdoptionRequest(
+                    user_id=ananya.id,
+                    pet_id=moti.id,
+                    full_name="Ananya Iyer",
+                    phone="+91 97123 45678",
+                    address="88, 12th Main, Indiranagar, Bengaluru, Karnataka - 560038",
+                    living_situation="Own House with Fenced Yard",
+                    has_other_pets=False,
+                    previous_experience="Grew up with indie dogs in Bengaluru. Knowledgeable about regular vet checkups and daily exercise.",
+                    reason="Looking for a loyal and affectionate companion for our home.",
+                    status="approved",
+                    admin_notes="Home verification complete. Ananya is a wonderful pet parent. Moti is happily adopted!",
+                    created_at=utc_now() - timedelta(days=12),
+                    updated_at=utc_now() - timedelta(days=10)
+                )
+                db.session.add(req1)
+                print("[SEED] Added adoption request: Ananya -> Moti")
 
         # Priya's pending request for Bruno
-        req2 = AdoptionRequest(
-            user_id=priya.id,
-            pet_id=1,  # Bruno
-            full_name="Priya Patel",
-            phone="+91 98234 56789",
-            address="12, Gokuldham Society, Satellite Road, Ahmedabad, Gujarat - 380015",
-            living_situation="Own House with Fenced Yard",
-            has_other_pets=True,
-            previous_experience="Have experience caring for rescued indie dogs and cats.",
-            reason="We love Bruno's calm nature and have plenty of time for daily evening walks.",
-            status="pending",
-            admin_notes="Application under initial review. Scheduling phone verification with applicant.",
-            created_at=utc_now() - timedelta(days=2),
-            updated_at=utc_now() - timedelta(days=2)
-        )
-        db.session.add(req2)
-        db.session.commit()
+        if priya and bruno:
+            existing_req2 = AdoptionRequest.query.filter_by(user_id=priya.id, pet_id=bruno.id).first()
+            if not existing_req2:
+                req2 = AdoptionRequest(
+                    user_id=priya.id,
+                    pet_id=bruno.id,
+                    full_name="Priya Patel",
+                    phone="+91 98234 56789",
+                    address="12, Gokuldham Society, Satellite Road, Ahmedabad, Gujarat - 380015",
+                    living_situation="Own House with Fenced Yard",
+                    has_other_pets=True,
+                    previous_experience="Have experience caring for rescued indie dogs and cats.",
+                    reason="We love Bruno's calm nature and have plenty of time for daily evening walks.",
+                    status="pending",
+                    admin_notes="Application under initial review. Scheduling phone verification with applicant.",
+                    created_at=utc_now() - timedelta(days=2),
+                    updated_at=utc_now() - timedelta(days=2)
+                )
+                db.session.add(req2)
+                print("[SEED] Added adoption request: Priya -> Bruno")
+
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[SEED] Warning during adoption requests commit: {e}")
 
         print("Seeding Sample Orders with Indian Rupee (INR)...")
-        # Order 1: Rohan's delivered order
-        order1 = Order(
-            user_id=rohan.id,
-            order_number="ANS-IN-20261110-A98F21",
-            subtotal_amount=6498.00,
-            shipping_fee=0.0,
-            tax_amount=324.90,
-            total_amount=6822.90,
-            status="Delivered",
-            payment_method="UPI / QR (Google Pay)",
-            payment_status="Paid",
-            shipping_name="Rohan Verma",
-            shipping_phone="+91 98765 43210",
-            shipping_address="Flat 402, Shanti Heights, Bandra West",
-            shipping_city="Mumbai",
-            shipping_pincode="400050",
-            created_at=utc_now() - timedelta(days=8)
-        )
-        db.session.add(order1)
-        db.session.flush()
+        p_royal = Product.query.filter_by(name="Royal Canin Maxi Adult Dry Dog Food (15kg)").first()
+        p_kong = Product.query.filter_by(name="KONG Classic Durable Natural Rubber Dog Chew Toy (Large)").first()
+        p_whiskas = Product.query.filter_by(name="Whiskas Ocean Fish & Tuna Wet Cat Food (12-Pouch Multipack)").first()
+        p_bed = Product.query.filter_by(name="Orthopedic Memory Foam Ultra-Soft Velvet Pet Lounge Bed").first()
 
-        item1_1 = OrderItem(
-            order_id=order1.id,
-            product_id=1,
-            product_name="Royal Canin Maxi Adult Dry Dog Food (15kg)",
-            price=5499.00,
-            quantity=1,
-            subtotal=5499.00
-        )
-        item1_2 = OrderItem(
-            order_id=order1.id,
-            product_id=6,
-            product_name="KONG Classic Durable Natural Rubber Dog Chew Toy (Large)",
-            price=999.00,
-            quantity=1,
-            subtotal=999.00
-        )
-        db.session.add_all([item1_1, item1_2])
+        # Order 1: Rohan's delivered order
+        if rohan:
+            existing_order1 = Order.query.filter_by(order_number="ANS-IN-20261110-A98F21").first()
+            if not existing_order1:
+                order1 = Order(
+                    user_id=rohan.id,
+                    order_number="ANS-IN-20261110-A98F21",
+                    subtotal_amount=6498.00,
+                    shipping_fee=0.0,
+                    tax_amount=324.90,
+                    total_amount=6822.90,
+                    status="Delivered",
+                    payment_method="UPI / QR (Google Pay)",
+                    payment_status="Paid",
+                    shipping_name="Rohan Verma",
+                    shipping_phone="+91 98765 43210",
+                    shipping_address="Flat 402, Shanti Heights, Bandra West",
+                    shipping_city="Mumbai",
+                    shipping_pincode="400050",
+                    created_at=utc_now() - timedelta(days=8)
+                )
+                db.session.add(order1)
+                db.session.flush()
+
+                if p_royal:
+                    db.session.add(OrderItem(
+                        order_id=order1.id,
+                        product_id=p_royal.id,
+                        product_name=p_royal.name,
+                        price=p_royal.price,
+                        quantity=1,
+                        subtotal=p_royal.price
+                    ))
+                if p_kong:
+                    db.session.add(OrderItem(
+                        order_id=order1.id,
+                        product_id=p_kong.id,
+                        product_name=p_kong.name,
+                        price=p_kong.price,
+                        quantity=1,
+                        subtotal=p_kong.price
+                    ))
+                print("[SEED] Added order: Rohan (Delivered)")
 
         # Order 2: Priya's processing order
-        order2 = Order(
-            user_id=priya.id,
-            order_number="ANS-IN-20261118-B47C56",
-            subtotal_amount=3398.00,
-            shipping_fee=0.0,
-            tax_amount=169.90,
-            total_amount=3567.90,
-            status="Processing",
-            payment_method="UPI / QR (PhonePe)",
-            payment_status="Paid",
-            shipping_name="Priya Patel",
-            shipping_phone="+91 98234 56789",
-            shipping_address="12, Gokuldham Society, Satellite Road",
-            shipping_city="Ahmedabad",
-            shipping_pincode="380015",
-            created_at=utc_now() - timedelta(days=1)
-        )
-        db.session.add(order2)
-        db.session.flush()
+        if priya:
+            existing_order2 = Order.query.filter_by(order_number="ANS-IN-20261118-B47C56").first()
+            if not existing_order2:
+                order2 = Order(
+                    user_id=priya.id,
+                    order_number="ANS-IN-20261118-B47C56",
+                    subtotal_amount=3398.00,
+                    shipping_fee=0.0,
+                    tax_amount=169.90,
+                    total_amount=3567.90,
+                    status="Processing",
+                    payment_method="UPI / QR (PhonePe)",
+                    payment_status="Paid",
+                    shipping_name="Priya Patel",
+                    shipping_phone="+91 98234 56789",
+                    shipping_address="12, Gokuldham Society, Satellite Road",
+                    shipping_city="Ahmedabad",
+                    shipping_pincode="380015",
+                    created_at=utc_now() - timedelta(days=1)
+                )
+                db.session.add(order2)
+                db.session.flush()
 
-        item2_1 = OrderItem(
-            order_id=order2.id,
-            product_id=2,
-            product_name="Whiskas Ocean Fish & Tuna Wet Cat Food (12-Pouch Multipack)",
-            price=899.00,
-            quantity=1,
-            subtotal=899.00
-        )
-        item2_2 = OrderItem(
-            order_id=order2.id,
-            product_id=11,
-            product_name="Orthopedic Memory Foam Ultra-Soft Velvet Pet Lounge Bed",
-            price=2499.00,
-            quantity=1,
-            subtotal=2499.00
-        )
-        db.session.add_all([item2_1, item2_2])
+                if p_whiskas:
+                    db.session.add(OrderItem(
+                        order_id=order2.id,
+                        product_id=p_whiskas.id,
+                        product_name=p_whiskas.name,
+                        price=p_whiskas.price,
+                        quantity=1,
+                        subtotal=p_whiskas.price
+                    ))
+                if p_bed:
+                    db.session.add(OrderItem(
+                        order_id=order2.id,
+                        product_id=p_bed.id,
+                        product_name=p_bed.name,
+                        price=p_bed.price,
+                        quantity=1,
+                        subtotal=p_bed.price
+                    ))
+                print("[SEED] Added order: Priya (Processing)")
 
-        db.session.commit()
-        print("Database seeded with Indian demo accounts, pets across Indian cities, INR pricing, and UPI payments!")
+        try:
+            db.session.commit()
+            print("[SEED] Database seeding complete (safe & idempotent).")
+        except Exception as e:
+            db.session.rollback()
+            print(f"[SEED] Warning during order commit: {e}")
 
 if __name__ == '__main__':
-    seed_database()
+    seed_database(safe_mode=True)

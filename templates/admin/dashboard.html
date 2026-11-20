@@ -11,7 +11,7 @@
     <div class="admin-stat-card">
       <div>
         <small class="text-muted fw-semibold d-block mb-1">Total Store Revenue</small>
-        <h3 class="fw-bold mb-0 text-dark">${{ "%.2f"|format(total_revenue) }}</h3>
+        <h3 class="fw-bold mb-0 text-dark">₹{{ "%.2f"|format(total_revenue) }}</h3>
         <small class="text-success"><i class="bi bi-graph-up-arrow me-1"></i> Lifetime sales</small>
       </div>
       <div class="stat-icon-wrapper bg-teal-light">
@@ -133,7 +133,7 @@
                   {{ ord.shipping_name }}<br>
                   <small class="text-muted">{{ ord.shipping_phone }}</small>
                 </td>
-                <td class="fw-bold">${{ "%.2f"|format(ord.total_amount) }}</td>
+                <td class="fw-bold">₹{{ "%.2f"|format(ord.total_amount) }}</td>
                 <td>
                   {% if ord.status == 'Delivered' %}
                     <span class="badge bg-success">Delivered</span>

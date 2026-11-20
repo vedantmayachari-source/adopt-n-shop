@@ -68,7 +68,7 @@
               <span class="badge bg-light text-dark border">{{ product.category }}</span>
             </td>
             <td class="fw-bold text-dark">
-              ${{ "%.2f"|format(product.price) }}
+              ₹{{ "%.2f"|format(product.price) }}
             </td>
             <td>
               {% if product.stock <= 0 %}

@@ -68,7 +68,7 @@
               <span class="badge bg-light text-dark border">{{ order.total_items_count }} items</span>
             </td>
             <td class="fw-bold text-dark">
-              ${{ "%.2f"|format(order.total_amount) }}
+              ₹{{ "%.2f"|format(order.total_amount) }}
             </td>
             <td>
               <small class="d-block">{{ order.payment_method }}</small>

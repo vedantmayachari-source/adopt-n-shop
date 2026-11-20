@@ -23,8 +23,56 @@ app.config.from_object(Config)
 
 # Initialize Extensions
 db.init_app(app)
-with app.app_context():
-    db.create_all()
+
+def init_app_db(app_instance):
+    """
+    Safely initialize database schema and ensure required demo data exists.
+    Compatible with SQLite, Render PostgreSQL, and Gunicorn workers.
+    Never drops existing tables or overwrites production records.
+    """
+    with app_instance.app_context():
+        try:
+            # 1. Create tables if not existing
+            db.create_all()
+
+            # 2. Check if database needs initial seeding or repair
+            from seed_data import seed_database
+            
+            pet_count = Pet.query.count()
+            prod_count = Product.query.count()
+            admin_user = User.query.filter(User.role == 'admin').first()
+
+            # If empty database or missing essential data, run safe idempotent seed
+            if pet_count == 0 or prod_count == 0 or admin_user is None:
+                app_instance.logger.info("[INIT] Auto-seeding database with Indian demo records and administrator account...")
+                seed_database(safe_mode=True, app_instance=app_instance)
+            else:
+                # Ensure administrator account exists and is valid
+                admin_email = app_instance.config.get('ADMIN_EMAIL', 'admin@adoptnshop.com').lower()
+                admin = User.query.filter(func.lower(User.email) == admin_email).first()
+                if not admin:
+                    app_instance.logger.info("[INIT] Admin account missing; creating administrator account...")
+                    seed_database(safe_mode=True, app_instance=app_instance)
+                else:
+                    if admin.role != 'admin':
+                        admin.role = 'admin'
+                        db.session.commit()
+                    if os.environ.get('ADMIN_PASSWORD'):
+                        admin.set_password(os.environ.get('ADMIN_PASSWORD'))
+                        db.session.commit()
+
+                # Ensure any legacy pets with approval_status IS NULL are approved
+                from sqlalchemy import text
+                try:
+                    db.session.execute(text("UPDATE pets SET approval_status = 'approved' WHERE approval_status IS NULL OR approval_status = ''"))
+                    db.session.commit()
+                except Exception:
+                    db.session.rollback()
+
+        except Exception as e:
+            app_instance.logger.warning(f"[INIT] Database initialization notice: {e}")
+
+init_app_db(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -143,11 +191,11 @@ def inject_global_data():
 
 @app.route('/')
 def index():
-    featured_pets = Pet.query.filter_by(status='available', approval_status='approved').order_by(Pet.created_at.desc()).limit(4).all()
+    featured_pets = Pet.query.filter(Pet.status == 'available', (Pet.approval_status == 'approved') | (Pet.approval_status.is_(None))).order_by(Pet.created_at.desc()).limit(4).all()
     featured_products = Product.query.filter_by(is_active=True).filter(Product.stock > 0).order_by(Product.created_at.desc()).limit(4).all()
     
     total_pets_adopted = Pet.query.filter_by(status='adopted').count()
-    total_available_pets = Pet.query.filter_by(status='available', approval_status='approved').count()
+    total_available_pets = Pet.query.filter(Pet.status == 'available', (Pet.approval_status == 'approved') | (Pet.approval_status.is_(None))).count()
     total_products = Product.query.filter_by(is_active=True).count()
     total_customers = User.query.filter_by(role='customer').count()
 
@@ -335,7 +383,7 @@ def pets_list():
     state = request.args.get('state', 'all')
 
     # Only approved pets appear on the public storefront
-    query = Pet.query.filter(Pet.approval_status == 'approved')
+    query = Pet.query.filter((Pet.approval_status == 'approved') | (Pet.approval_status.is_(None)))
 
     if query_text:
         query = query.filter(
