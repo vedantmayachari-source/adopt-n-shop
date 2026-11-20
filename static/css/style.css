@@ -65,13 +65,299 @@ html {
 
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--light-bg);
+  background: linear-gradient(130deg, #FAF7F2 0%, #F6F0E5 28%, #EDF2EB 55%, #FAF7F2 78%, #FDFBF7 100%);
+  background-size: 300% 300%;
+  animation: liveGradientShift 24s ease infinite;
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   LIVE ANIMATED BACKGROUND (Inspired by dontboardme.com)
+   GPU-Accelerated, Lightweight, Strict Z-Index, Non-Intrusive
+   ========================================================================== */
+
+.live-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  contain: strict;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Organic Animated Blobs */
+.live-ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(65px);
+  -webkit-filter: blur(65px);
+  pointer-events: none;
+  will-change: transform, border-radius;
+}
+
+/* Blob 1: Gentle Sunset Peach Warmth (Top-Left) */
+.live-ambient-blob.blob-1 {
+  top: -10%;
+  left: -8%;
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(circle, rgba(242, 140, 69, 0.12) 0%, rgba(242, 140, 69, 0.03) 60%, rgba(242, 140, 69, 0) 80%);
+  animation: liveBlobMorph1 26s ease-in-out infinite alternate;
+}
+
+/* Blob 2: Sage Green Organic Breeze (Middle-Right) */
+.live-ambient-blob.blob-2 {
+  top: 32%;
+  right: -10%;
+  width: 640px;
+  height: 640px;
+  background: radial-gradient(circle, rgba(168, 185, 160, 0.18) 0%, rgba(168, 185, 160, 0.05) 60%, rgba(168, 185, 160, 0) 80%);
+  animation: liveBlobMorph2 30s ease-in-out infinite alternate;
+}
+
+/* Blob 3: Warm Cream / Forest Depth Glow (Bottom-Left) */
+.live-ambient-blob.blob-3 {
+  bottom: -15%;
+  left: 12%;
+  width: 620px;
+  height: 620px;
+  background: radial-gradient(circle, rgba(24, 61, 50, 0.05) 0%, rgba(246, 240, 229, 0.5) 45%, rgba(246, 240, 229, 0) 75%);
+  animation: liveBlobMorph3 28s ease-in-out infinite alternate;
+}
+
+/* Subtle Moving Ambient Light Beam */
+.live-light-beam {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 40% 40%, rgba(255, 255, 255, 0.18) 0%, rgba(246, 240, 229, 0.06) 35%, rgba(255, 255, 255, 0) 70%);
+  transform-origin: center center;
+  animation: liveLightSweep 34s linear infinite;
+  pointer-events: none;
+}
+
+/* Softly Floating Paw Prints */
+.live-floating-paws {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.floating-paw {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.floating-paw.paw-1 {
+  left: 8%;
+  width: 38px;
+  height: 38px;
+  color: rgba(242, 140, 69, 0.09);
+  animation: liveFloatPaw1 22s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -3s;
+}
+
+.floating-paw.paw-2 {
+  left: 25%;
+  width: 48px;
+  height: 48px;
+  color: rgba(24, 61, 50, 0.075);
+  animation: liveFloatPaw2 27s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -14s;
+}
+
+.floating-paw.paw-3 {
+  left: 44%;
+  width: 32px;
+  height: 32px;
+  color: rgba(168, 185, 160, 0.11);
+  animation: liveFloatPaw1 20s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -8s;
+}
+
+.floating-paw.paw-4 {
+  left: 62%;
+  width: 44px;
+  height: 44px;
+  color: rgba(242, 140, 69, 0.08);
+  animation: liveFloatPaw2 25s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -19s;
+}
+
+.floating-paw.paw-5 {
+  left: 79%;
+  width: 36px;
+  height: 36px;
+  color: rgba(24, 61, 50, 0.07);
+  animation: liveFloatPaw1 24s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -5s;
+}
+
+.floating-paw.paw-6 {
+  left: 91%;
+  width: 50px;
+  height: 50px;
+  color: rgba(168, 185, 160, 0.095);
+  animation: liveFloatPaw2 29s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: -11s;
+}
+
+/* Keyframes: Continuous Gradient Shift */
+@keyframes liveGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Keyframes: Gentle Organic Blob Morphing */
+@keyframes liveBlobMorph1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  }
+  50% {
+    transform: translate(45px, 35px) scale(1.08);
+    border-radius: 55% 45% 35% 65% / 60% 38% 62% 40%;
+  }
+  100% {
+    transform: translate(-25px, 50px) scale(0.95);
+    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+  }
+}
+
+@keyframes liveBlobMorph2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    border-radius: 60% 40% 50% 50% / 55% 45% 55% 45%;
+  }
+  50% {
+    transform: translate(-50px, -40px) scale(1.12);
+    border-radius: 35% 65% 60% 40% / 40% 60% 40% 60%;
+  }
+  100% {
+    transform: translate(35px, -25px) scale(0.92);
+    border-radius: 50% 50% 35% 65% / 45% 55% 45% 55%;
+  }
+}
+
+@keyframes liveBlobMorph3 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+  }
+  50% {
+    transform: translate(35px, -35px) scale(1.06);
+    border-radius: 65% 35% 45% 55% / 50% 60% 40% 50%;
+  }
+  100% {
+    transform: translate(-35px, 25px) scale(0.96);
+    border-radius: 40% 60% 55% 45% / 60% 40% 60% 40%;
+  }
+}
+
+/* Keyframes: Moving Light Sweep */
+@keyframes liveLightSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Keyframes: Soft Floating Paws (Drift Upward with Gentle Sway) */
+@keyframes liveFloatPaw1 {
+  0% {
+    transform: translateY(105vh) translateX(0) rotate(-10deg) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) translateX(30px) rotate(12deg) scale(1);
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-12vh) translateX(-25px) rotate(-15deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes liveFloatPaw2 {
+  0% {
+    transform: translateY(105vh) translateX(0) rotate(15deg) scale(0.9);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) translateX(-35px) rotate(-8deg) scale(1.05);
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-12vh) translateX(20px) rotate(20deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* Smooth Background Transitions between sections */
+section.bg-white,
+.section-translucent-white {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+section[style*="var(--warm-cream-surface)"],
+.section-translucent-cream {
+  background-color: rgba(253, 251, 247, 0.76) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none !important;
+    background-position: 0% 50% !important;
+  }
+  .live-ambient-blob,
+  .live-light-beam,
+  .floating-paw {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .live-ambient-blob.blob-1 { width: 340px; height: 340px; filter: blur(45px); -webkit-filter: blur(45px); }
+  .live-ambient-blob.blob-2 { width: 380px; height: 380px; filter: blur(45px); -webkit-filter: blur(45px); }
+  .live-ambient-blob.blob-3 { width: 320px; height: 320px; filter: blur(45px); -webkit-filter: blur(45px); }
+  .floating-paw.paw-3,
+  .floating-paw.paw-6 {
+    display: none;
+  }
 }
 
 main {
