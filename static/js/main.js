@@ -108,4 +108,79 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // 7. Scroll-Triggered Reveal Animations (IntersectionObserver)
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  if ('IntersectionObserver' in window && revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    // Fallback for browsers without IntersectionObserver
+    revealElements.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  // 8. Animated Stats Counter
+  const statNumbers = document.querySelectorAll('.stat-number');
+  if ('IntersectionObserver' in window && statNumbers.length > 0) {
+    const countObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const rawText = el.textContent.trim();
+          const targetNum = parseInt(rawText.replace(/\D/g, ''), 10);
+          const hasPlus = rawText.includes('+');
+
+          if (!isNaN(targetNum) && targetNum > 0) {
+            let current = 0;
+            const duration = 1600;
+            const stepTime = Math.max(Math.floor(duration / targetNum), 20);
+            const increment = Math.ceil(targetNum / (duration / stepTime));
+
+            const timer = setInterval(function () {
+              current += increment;
+              if (current >= targetNum) {
+                current = targetNum;
+                clearInterval(timer);
+              }
+              el.textContent = current + (hasPlus ? '+' : '');
+            }, stepTime);
+          }
+
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    statNumbers.forEach(function (stat) {
+      countObserver.observe(stat);
+    });
+  }
+
+  // 9. Hero Video Autoplay Guardian
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    heroVideo.muted = true;
+    const playPromise = heroVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function () {
+        // Autoplay prevented by browser power settings or policy; keep poster image visible
+      });
+    }
+  }
 });

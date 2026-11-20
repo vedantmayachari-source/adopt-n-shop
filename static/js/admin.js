@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
               datasets: [{
                 data: data.species.counts,
                 backgroundColor: [
-                  '#0d9488', // Teal
-                  '#f97316', // Orange
-                  '#3b82f6', // Blue
-                  '#8b5cf6', // Purple
-                  '#ec4899', // Pink
-                  '#64748b'  // Slate
+                  '#183D32', // Forest Green
+                  '#F28C45', // Sunset Orange
+                  '#A8B9A0', // Sage Green
+                  '#252D27', // Charcoal
+                  '#EBDDC7', // Warm Cream Accent
+                  '#819578'  // Dark Sage
                 ],
                 borderWidth: 2,
                 borderColor: '#ffffff'
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
               datasets: [{
                 label: 'Products',
                 data: data.categories.counts,
-                backgroundColor: '#0d9488',
+                backgroundColor: '#183D32',
                 borderRadius: 8,
                 maxBarThickness: 45
               }]
@@ -93,9 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: data.order_statuses.counts,
                 backgroundColor: [
                   '#f59e0b', // Pending (amber)
-                  '#3b82f6', // Processing (blue)
-                  '#8b5cf6', // Shipped (purple)
-                  '#10b981', // Delivered (green)
+                  '#F28C45', // Processing (Sunset Orange)
+                  '#A8B9A0', // Shipped (Sage Green)
+                  '#183D32', // Delivered (Forest Green)
                   '#ef4444'  // Cancelled (red)
                 ],
                 borderWidth: 2,

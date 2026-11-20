@@ -1,50 +1,62 @@
 {% extends 'base.html' %}
 
-{% block title %}Adopt n Shop – Online Pet Adoption and E-Commerce System{% endblock %}
+{% block title %}Adopt n Shop – Love. Adopt. Care. Online Pet Adoption & Wellness Store{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+<!-- 1. Hero Section: Rich Video & Editorial Presentation -->
 <section class="hero-section">
   <div class="container position-relative" style="z-index: 2;">
     <div class="row align-items-center g-5">
-      <div class="col-lg-7">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
-          <i class="bi bi-star-fill me-1"></i> Final Year BCA Capstone Project
+      <div class="col-lg-7 reveal-on-scroll">
+        <span class="badge px-3 py-2 rounded-pill fw-bold mb-3 d-inline-flex align-items-center gap-2" style="background: rgba(242, 140, 69, 0.2); color: var(--warm-cream); border: 1px solid rgba(242, 140, 69, 0.4);">
+          <i class="bi bi-patch-check-fill" style="color: var(--sunset-orange);"></i> India's Premier Ethical Pet Ecosystem
         </span>
         <h1 class="hero-title">
           Find Your Forever Friend. <br>
-          <span style="color: #fed7aa;">Spoil Them With Love.</span>
+          <span class="hero-highlight">Spoil Them With Love.</span>
         </h1>
         <p class="hero-subtitle">
-          Adopt n Shop seamlessly connects certified shelters with pet parents, while providing top-tier nutrition, interactive toys, and healthcare supplies delivered right to your door.
+          Adopt n Shop connects certified Indian shelters with loving pet parents, while delivering vet-approved nutrition, engaging toys, and medical care straight to your door.
         </p>
         <div class="d-flex flex-wrap gap-3">
-          <a href="{{ url_for('pets_list') }}" class="btn btn-secondary-custom btn-lg">
-            <i class="bi bi-balloon-heart-fill me-2"></i> Browse Pets to Adopt
+          <a href="{{ url_for('pets_list') }}" class="btn btn-sunset btn-lg btn-pill shadow">
+            <i class="bi bi-balloon-heart-fill me-1"></i> Browse Pets to Adopt
           </a>
-          <a href="{{ url_for('list_my_pet') }}" class="btn btn-warning btn-lg fw-bold text-dark">
-            <i class="bi bi-plus-circle-fill me-2"></i> List Your Pet for Adoption
+          <a href="{{ url_for('list_my_pet') }}" class="btn btn-pill btn-lg fw-bold" style="background-color: var(--warm-cream); color: var(--forest-green); border: 1.5px solid var(--warm-cream);">
+            <i class="bi bi-plus-circle-fill me-1" style="color: var(--sunset-orange);"></i> Rehome a Pet
           </a>
-          <a href="{{ url_for('shop_list') }}" class="btn btn-outline-light btn-lg">
-            <i class="bi bi-bag-check-fill me-2"></i> Shop Pet Supplies
+          <a href="{{ url_for('shop_list') }}" class="btn btn-outline-light btn-lg btn-pill">
+            <i class="bi bi-bag-check-fill me-1"></i> Shop Supplies
           </a>
         </div>
       </div>
-      <div class="col-lg-5 text-center">
-        <div class="position-relative d-inline-block">
-          <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=700&q=80" 
-               alt="Happy Dog" 
-               class="img-fluid rounded-4 shadow-lg border border-4 border-white"
-               style="max-height: 420px; object-fit: cover;"
-               onerror="this.src='/static/images/default_pet.svg'">
-          <div class="position-absolute bottom-0 start-0 bg-white text-dark p-3 rounded-4 shadow m-3 text-start d-flex align-items-center gap-3">
-            <div class="rounded-circle bg-teal text-white p-3 d-flex align-items-center justify-content-center" style="background-color: var(--primary);">
-              <i class="bi bi-shield-fill-check fs-4"></i>
+      <div class="col-lg-5 text-center reveal-on-scroll delay-200">
+        <div class="hero-media-wrapper position-relative d-inline-block w-100">
+          <div class="hero-media-container">
+            <video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80">
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-dog-running-in-the-grass-on-a-sunny-day-41618-large.mp4" type="video/mp4">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80" 
+                   alt="Happy Golden Pet" 
+                   class="img-fluid"
+                   onerror="this.src='/static/images/default_pet.svg'">
+            </video>
+          </div>
+
+          <!-- Floating Badges (dontboardme.com aesthetic) -->
+          <div class="hero-floating-badge bottom-left d-flex align-items-center gap-3">
+            <div class="rounded-circle text-white p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background-color: var(--forest-green);">
+              <i class="bi bi-shield-fill-check fs-5"></i>
             </div>
-            <div>
-              <div class="fw-bold mb-0">100% Vet Checked</div>
-              <small class="text-muted">All rescues vaccinated & healthy</small>
+            <div class="text-start">
+              <div class="fw-bold small mb-0">100% Vet Checked</div>
+              <small class="text-muted" style="font-size: 0.76rem;">Vaccinated & dewormed</small>
             </div>
+          </div>
+
+          <div class="hero-floating-badge top-right d-none d-sm-flex align-items-center gap-2">
+            <i class="bi bi-star-fill text-warning"></i>
+            <span class="small fw-bold">4.9 / 5</span>
+            <span class="text-muted small" style="font-size: 0.76rem;">(2,400+ Adoptions)</span>
           </div>
         </div>
       </div>
@@ -52,14 +64,33 @@
   </div>
 </section>
 
-<!-- Stats Counter Banner -->
+<!-- 2. Infinite Marquee Ticker -->
+<div class="marquee-container" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>🐾 Adopt With Love</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>100% Vet Certified Health</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Organic Nutrition & Supplies</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Ethical Citizen Rehoming</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Pan-India Doorstep Dispatch</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Lifelong Pet Wellness</span><span class="marquee-sep">•</span></div>
+    <!-- Duplicate for infinite looping -->
+    <div class="marquee-item"><span>🐾 Adopt With Love</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>100% Vet Certified Health</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Organic Nutrition & Supplies</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Ethical Citizen Rehoming</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Pan-India Doorstep Dispatch</span><span class="marquee-sep">•</span></div>
+    <div class="marquee-item"><span>Lifelong Pet Wellness</span><span class="marquee-sep">•</span></div>
+  </div>
+</div>
+
+<!-- 3. Dynamic Stats Counter Banner -->
 <div class="container">
-  <div class="stats-banner">
+  <div class="stats-banner reveal-on-scroll">
     <div class="row g-4 text-center">
       <div class="col-6 col-md-3">
         <div class="stat-item">
           <div class="stat-number">{{ total_available_pets }}+</div>
-          <div class="stat-label">Pets Waiting for Homes</div>
+          <div class="stat-label">Pets Awaiting Loving Homes</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
@@ -71,7 +102,7 @@
       <div class="col-6 col-md-3">
         <div class="stat-item">
           <div class="stat-number">{{ total_products }}+</div>
-          <div class="stat-label">Supplies in Store</div>
+          <div class="stat-label">Vet-Approved Products</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
@@ -84,23 +115,102 @@
   </div>
 </div>
 
-<!-- Featured Pets Section -->
+<!-- 4. Interactive 4 Service Pillars (dontboardme.com inspired) -->
 <section class="py-5 mt-4">
   <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+    <div class="text-center section-header reveal-on-scroll">
+      <span class="section-tag tag-forest">Our Core Pillars</span>
+      <h2 class="section-title">The Complete Care Ecosystem</h2>
+      <p class="text-muted mx-auto" style="max-width: 620px;">
+        Designed to provide every pet in India with the shelter, nutrition, healthcare, and unconditional love they deserve.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-100">
+        <div class="pillar-card">
+          <div class="pillar-num">01</div>
+          <div class="pillar-icon-box">
+            <i class="bi bi-balloon-heart"></i>
+          </div>
+          <h4 class="pillar-title">Loving Adoptions</h4>
+          <p class="pillar-desc">
+            Explore verified rescue dogs, cats, and birds from certified shelters looking for a lifelong human family.
+          </p>
+          <a href="{{ url_for('pets_list') }}" class="btn btn-outline-forest btn-sm mt-auto btn-pill">
+            Explore Pets <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-200">
+        <div class="pillar-card">
+          <div class="pillar-num">02</div>
+          <div class="pillar-icon-box">
+            <i class="bi bi-bag-check"></i>
+          </div>
+          <h4 class="pillar-title">Pet Shop & Care</h4>
+          <p class="pillar-desc">
+            High-grade kibble, organic wet foods, stimulating chew toys, and grooming essentials in Indian Rupees.
+          </p>
+          <a href="{{ url_for('shop_list') }}" class="btn btn-outline-forest btn-sm mt-auto btn-pill">
+            Shop Supplies <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-300">
+        <div class="pillar-card">
+          <div class="pillar-num">03</div>
+          <div class="pillar-icon-box">
+            <i class="bi bi-house-heart"></i>
+          </div>
+          <h4 class="pillar-title">Citizen Rehoming</h4>
+          <p class="pillar-desc">
+            Life changes happen. List your companion for transparent adoption under strict admin verification.
+          </p>
+          <a href="{{ url_for('list_my_pet') }}" class="btn btn-outline-forest btn-sm mt-auto btn-pill">
+            List a Pet <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-400">
+        <div class="pillar-card">
+          <div class="pillar-num">04</div>
+          <div class="pillar-icon-box">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h4 class="pillar-title">Certified Health</h4>
+          <p class="pillar-desc">
+            Every rescue is thoroughly examined by licensed veterinarians, fully vaccinated, and dewormed.
+          </p>
+          <a href="{{ url_for('about') }}" class="btn btn-outline-forest btn-sm mt-auto btn-pill">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Dynamic Featured Pets Section -->
+<section class="py-5" style="background-color: var(--warm-cream-surface);">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 reveal-on-scroll">
       <div>
         <span class="section-tag">Adopt, Don't Shop</span>
         <h2 class="section-title">Rescue Pets Seeking Forever Homes</h2>
         <p class="text-muted mb-0">Meet some of our loving animals ready to bring warmth to your family.</p>
       </div>
-      <a href="{{ url_for('pets_list') }}" class="btn btn-outline-primary mt-3 mt-md-0">
+      <a href="{{ url_for('pets_list') }}" class="btn btn-outline-forest btn-pill mt-3 mt-md-0">
         View All Pets <i class="bi bi-arrow-right ms-1"></i>
       </a>
     </div>
 
     <div class="row g-4">
       {% for pet in featured_pets %}
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-3 col-md-6 reveal-on-scroll delay-{{ loop.index * 100 }}">
           <div class="custom-card">
             <div class="card-img-container">
               <img src="{{ pet.image_url }}" alt="{{ pet.name }}" onerror="this.src='/static/images/default_pet.svg'">
@@ -108,15 +218,15 @@
                 <span class="badge badge-{{ pet.status }}">{{ pet.status.capitalize() }}</span>
               </span>
               <span class="badge-overlay-right">
-                <span class="badge bg-dark bg-opacity-75 text-white">
-                  <i class="bi bi-tag-fill me-1"></i>{{ pet.species }}
+                <span class="badge-category">
+                  <i class="bi bi-tag-fill me-1" style="color: var(--sunset-orange);"></i>{{ pet.species }}
                 </span>
               </span>
             </div>
-            <div class="p-3 d-flex flex-column flex-grow-1">
+            <div class="p-4 d-flex flex-column flex-grow-1">
               <div class="d-flex justify-content-between align-items-center mb-1">
-                <h5 class="fw-bold mb-0 text-truncate">{{ pet.name }}</h5>
-                <span class="badge bg-light text-secondary border">{{ pet.gender }}</span>
+                <h5 class="fw-bold mb-0 text-truncate" style="font-family: 'Playfair Display', serif;">{{ pet.name }}</h5>
+                <span class="badge bg-light text-dark border rounded-pill px-2 py-1 small">{{ pet.gender }}</span>
               </div>
               <div class="d-flex justify-content-between text-muted small mb-2">
                 <span class="text-truncate">{{ pet.breed }}</span>
@@ -125,13 +235,13 @@
               <div class="d-flex gap-2 small text-muted mb-3">
                 <span><i class="bi bi-calendar3 me-1"></i>{{ pet.age_display }}</span>
                 <span>•</span>
-                <span><i class="bi bi-check-circle-fill text-teal me-1" style="color: var(--primary);"></i>{{ 'Vaccinated' if pet.vaccinated else 'Needs Shots' }}</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i>{{ 'Vaccinated' if pet.vaccinated else 'Needs Shots' }}</span>
               </div>
-              <p class="small text-secondary mb-3 text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              <p class="small text-muted mb-3 text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5;">
                 {{ pet.description }}
               </p>
               <div class="mt-auto">
-                <a href="{{ url_for('pet_detail', pet_id=pet.id) }}" class="btn btn-primary w-100">
+                <a href="{{ url_for('pet_detail', pet_id=pet.id) }}" class="btn btn-forest w-100 btn-pill">
                   <i class="bi bi-balloon-heart me-1"></i> Meet {{ pet.name }}
                 </a>
               </div>
@@ -143,25 +253,25 @@
   </div>
 </section>
 
-<!-- Featured Products Section -->
+<!-- 6. Dynamic Featured Products Section -->
 <section class="py-5 bg-white border-top border-bottom">
   <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 reveal-on-scroll">
       <div>
-        <span class="section-tag" style="background-color: var(--secondary-light); color: var(--secondary-dark);">
-          Pet Essentials
+        <span class="section-tag" style="background-color: var(--sunset-orange-light); color: var(--sunset-orange-hover); border-color: rgba(242, 140, 69, 0.3);">
+          Pet Essentials & Boutique
         </span>
         <h2 class="section-title">Popular Pet Care Supplies</h2>
         <p class="text-muted mb-0">High grade food, stimulating toys, and medical care formulated for pet health.</p>
       </div>
-      <a href="{{ url_for('shop_list') }}" class="btn btn-outline-primary mt-3 mt-md-0">
+      <a href="{{ url_for('shop_list') }}" class="btn btn-outline-forest btn-pill mt-3 mt-md-0">
         Browse Store <i class="bi bi-arrow-right ms-1"></i>
       </a>
     </div>
 
     <div class="row g-4">
       {% for product in featured_products %}
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-3 col-md-6 reveal-on-scroll delay-{{ loop.index * 100 }}">
           <div class="custom-card">
             <div class="card-img-container">
               <img src="{{ product.image_url }}" alt="{{ product.name }}" onerror="this.src='/static/images/default_product.svg'">
@@ -170,33 +280,33 @@
               </span>
               {% if product.stock < 5 and product.stock > 0 %}
                 <span class="badge-overlay-right">
-                  <span class="badge bg-warning text-dark">Only {{ product.stock }} left</span>
+                  <span class="badge bg-warning text-dark rounded-pill">Only {{ product.stock }} left</span>
                 </span>
               {% endif %}
             </div>
-            <div class="p-3 d-flex flex-column flex-grow-1">
+            <div class="p-4 d-flex flex-column flex-grow-1">
               <h6 class="fw-bold mb-1 text-truncate" title="{{ product.name }}">{{ product.name }}</h6>
               <div class="d-flex justify-content-between align-items-baseline mb-2">
                 <span class="fs-5 fw-bold text-dark">₹{{ "%.2f"|format(product.price) }}</span>
-                <span class="badge bg-success-subtle text-success small">In Stock</span>
+                <span class="badge bg-success-subtle text-success small rounded-pill">In Stock</span>
               </div>
-              <p class="small text-secondary mb-3 text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              <p class="small text-muted mb-3 text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5;">
                 {{ product.description }}
               </p>
               <div class="mt-auto d-flex gap-2">
-                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-primary w-50">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-forest btn-pill w-50">
                   Details
                 </a>
                 {% if current_user.is_authenticated and not current_user.is_admin %}
                   <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="w-50">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="next" value="{{ request.url }}">
-                    <button type="submit" class="btn btn-secondary-custom w-100">
+                    <button type="submit" class="btn btn-sunset btn-pill w-100">
                       <i class="bi bi-cart-plus"></i> Add
                     </button>
                   </form>
                 {% else %}
-                  <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-secondary-custom w-50">
+                  <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sunset btn-pill w-50">
                     <i class="bi bi-cart-plus"></i> Buy
                   </a>
                 {% endif %}
@@ -209,48 +319,54 @@
   </div>
 </section>
 
-<!-- Why Choose Us -->
-<section class="py-5">
-  <div class="container text-center mb-5">
-    <span class="section-tag">Why Adopt n Shop</span>
-    <h2 class="section-title">The Complete Ecosystem for Pet Lovers</h2>
-    <p class="text-muted mx-auto" style="max-width: 650px;">
-      We bridge the gap between shelter adoptions and pet parenting supplies with transparency, safety, and care.
-    </p>
-  </div>
-
+<!-- 7. Process Section: 4-Step Journey -->
+<section class="py-5" style="background-color: var(--warm-cream-surface);">
   <div class="container">
+    <div class="text-center section-header reveal-on-scroll">
+      <span class="section-tag tag-forest">How It Works</span>
+      <h2 class="section-title">Your Simple 4-Step Adoption Path</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">
+        We have streamlined the pet adoption process so you can focus on welcoming your new family member safely.
+      </p>
+    </div>
+
     <div class="row g-4">
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 border h-100 text-center shadow-sm">
-          <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--primary-light); color: var(--primary);">
-            <i class="bi bi-patch-check-fill fs-2"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Verified Health & Vaccinations</h4>
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-100">
+        <div class="process-step-card">
+          <div class="process-badge">1</div>
+          <h5 class="fw-bold mb-2">Browse & Choose</h5>
           <p class="text-muted small mb-0">
-            Every rescue animal is examined by licensed veterinarians, vaccinated, dewormed, and microchipped before adoption.
+            Explore verified rescue profiles with clear age, breed, temperament, and health records across Indian cities.
           </p>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 border h-100 text-center shadow-sm">
-          <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--secondary-light); color: var(--secondary);">
-            <i class="bi bi-heart-pulse-fill fs-2"></i>
-          </div>
-          <h4 class="fw-bold mb-2">Simple & Transparent Adoption</h4>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-200">
+        <div class="process-step-card">
+          <div class="process-badge">2</div>
+          <h5 class="fw-bold mb-2">Submit Application</h5>
           <p class="text-muted small mb-0">
-            Submit your adoption application online with our intuitive form and track review progress in real time.
+            Complete a thoughtful adoption questionnaire describing your home environment and pet experience.
           </p>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 border h-100 text-center shadow-sm">
-          <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: #dbeafe; color: #2563eb;">
-            <i class="bi bi-box-seam-fill fs-2"></i>
-          </div>
-          <h4 class="fw-bold mb-2">One-Stop Pet Essentials</h4>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-300">
+        <div class="process-step-card">
+          <div class="process-badge">3</div>
+          <h5 class="fw-bold mb-2">Shelter Verification</h5>
           <p class="text-muted small mb-0">
-            From puppy starter kibble to cat towers and grooming products, shop everything your companion needs in one cart.
+            Our shelter partner reviews your request and connects with you for a brief alignment interview.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 reveal-on-scroll delay-400">
+        <div class="process-step-card">
+          <div class="process-badge">4</div>
+          <h5 class="fw-bold mb-2">Welcome Home</h5>
+          <p class="text-muted small mb-0">
+            Finalize adoption paperwork, equip your home with our starter supplies, and bring your best friend home!
           </p>
         </div>
       </div>
@@ -258,18 +374,102 @@
   </div>
 </section>
 
-<!-- Call to Action Banner -->
-<section class="py-5" style="background: linear-gradient(135deg, #0f766e, #0d9488); color: white;">
-  <div class="container text-center py-4">
-    <h2 class="fw-bold text-white mb-3">Ready to Change an Animal's Life Forever?</h2>
-    <p class="lead mb-4 mx-auto" style="max-width: 600px; opacity: 0.95;">
-      Start your adoption journey today or support our shelter efforts by shopping for high-quality pet supplies.
+<!-- 8. Adoption Stories & Customer Testimonials -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="text-center section-header reveal-on-scroll">
+      <span class="section-tag">Happy Tails</span>
+      <h2 class="section-title">Adoption Stories That Warm Hearts</h2>
+      <p class="text-muted mx-auto" style="max-width: 620px;">
+        Read what loving families across India say about their adoption and pet care experience with Adopt n Shop.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6 reveal-on-scroll delay-100">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <p class="testimonial-quote">
+            "Adopting Bruno through Adopt n Shop was effortless. His complete medical history and vaccinations were transparently recorded, and our application was approved within 48 hours."
+          </p>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Priya Sharma" class="testimonial-avatar">
+            <div>
+              <div class="fw-bold text-dark mb-0">Priya Sharma</div>
+              <small class="text-muted"><i class="bi bi-geo-alt me-1 text-danger"></i>Bandra, Mumbai</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 reveal-on-scroll delay-200">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <p class="testimonial-quote">
+            "The organic puppy kibble and orthopedic pet bed arrived the next morning in perfect condition. Finding trustworthy supplies in INR has never been this simple."
+          </p>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Rajesh Menon" class="testimonial-avatar">
+            <div>
+              <div class="fw-bold text-dark mb-0">Rajesh Menon</div>
+              <small class="text-muted"><i class="bi bi-geo-alt me-1 text-danger"></i>Indiranagar, Bengaluru</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 reveal-on-scroll delay-300">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <p class="testimonial-quote">
+            "When my elderly mother could no longer care for her Persian cat, Adopt n Shop handled the citizen listing with immense dignity and connected us with an amazing verified family."
+          </p>
+          <div class="testimonial-author">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80" alt="Ananya Sen" class="testimonial-avatar">
+            <div>
+              <div class="fw-bold text-dark mb-0">Ananya Sen</div>
+              <small class="text-muted"><i class="bi bi-geo-alt me-1 text-danger"></i>Vasant Kunj, Delhi NCR</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Final Call to Action -->
+<section class="py-5" style="background: linear-gradient(145deg, #183D32 0%, #102922 100%); color: white;">
+  <div class="container text-center py-4 reveal-on-scroll">
+    <span class="badge px-3 py-2 rounded-pill fw-bold mb-3 d-inline-flex align-items-center gap-2" style="background: rgba(242, 140, 69, 0.2); color: var(--warm-cream);">
+      <i class="bi bi-heart-fill text-danger"></i> Every Life Matters
+    </span>
+    <h2 class="hero-title mb-3" style="font-size: 2.6rem;">Ready to Change an Animal's Life Forever?</h2>
+    <p class="hero-subtitle mx-auto mb-4" style="max-width: 620px;">
+      Start your adoption journey today or support our network of rescue shelters by stocking up on high-quality pet supplies.
     </p>
-    <div class="d-flex justify-content-center gap-3">
-      <a href="{{ url_for('pets_list') }}" class="btn btn-secondary-custom btn-lg">
-        <i class="bi bi-balloon-heart-fill me-2"></i> Find a Pet
+    <div class="d-flex justify-content-center flex-wrap gap-3">
+      <a href="{{ url_for('pets_list') }}" class="btn btn-sunset btn-lg btn-pill shadow">
+        <i class="bi bi-balloon-heart-fill me-2"></i> Find Your Pet
       </a>
-      <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">
+      <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg btn-pill">
         <i class="bi bi-person-plus-fill me-2"></i> Create Free Account
       </a>
     </div>

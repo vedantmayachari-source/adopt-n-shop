@@ -2,11 +2,11 @@
 :root {
   --admin-sidebar-width: 260px;
   --admin-topbar-height: 70px;
-  --admin-bg: #f8fafc;
-  --sidebar-bg: #0f172a;
-  --sidebar-hover: #1e293b;
-  --sidebar-active: #0d9488;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --admin-bg: #FAF7F2;
+  --sidebar-bg: #102922;
+  --sidebar-hover: #183D32;
+  --sidebar-active: #F28C45;
+  --card-shadow: 0 4px 6px -1px rgba(24, 61, 50, 0.05), 0 2px 4px -2px rgba(24, 61, 50, 0.03);
 }
 
 .admin-body {
@@ -19,7 +19,7 @@
 .admin-sidebar {
   width: var(--admin-sidebar-width);
   background-color: var(--sidebar-bg);
-  color: #94a3b8;
+  color: #A8B9A0;
   min-height: 100vh;
   position: fixed;
   top: 0;
@@ -29,6 +29,7 @@
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-brand {
@@ -36,22 +37,24 @@
   font-size: 1.3rem;
   font-weight: 800;
   color: #ffffff;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .sidebar-brand .brand-logo-sq {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #0d9488, #f97316);
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #183D32, #F28C45);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar-nav {
@@ -66,7 +69,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #64748b;
+  color: #819578;
 }
 
 .sidebar-link {
@@ -74,7 +77,7 @@
   align-items: center;
   gap: 0.85rem;
   padding: 0.75rem 1.5rem;
-  color: #94a3b8;
+  color: #A8B9A0;
   font-weight: 500;
   font-size: 0.95rem;
   text-decoration: none;
@@ -89,7 +92,7 @@
 
 .sidebar-link.active {
   color: #ffffff;
-  background-color: rgba(13, 148, 136, 0.15);
+  background-color: rgba(242, 140, 69, 0.15);
   border-left-color: var(--sidebar-active);
   font-weight: 600;
 }
@@ -106,7 +109,7 @@
 
 .sidebar-footer {
   padding: 1.25rem 1.5rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Main Content Area */
